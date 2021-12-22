@@ -1,0 +1,49 @@
+# controller
+ND-RGBW2Controller-NAME = RGBW2 Controller
+ND-RGBW2Controller-ICON = LampAndSwitch
+ST-RGBW2Controller-ST-NAME = Connected
+
+ND-RGBW2Device-NAME = RGBW2 
+ND-RGBW2Device-ICON = Lamp
+
+#Node
+ST-ST-NAME  = On
+ST-GV2-NAME = Power Use
+ST-GV3-NAME = MAC Address
+ST-GV4-NAME = Uptime
+ST-GV5-NAME = Update Status
+ST-GV6-NAME = Update Availabe
+ST-GV7-NAME = Mode
+ST-GV10-NAME = Red
+ST-GV11-NAME = Green
+ST-GV12-NAME = Blue
+ST-GV13-NAME = White
+ST-GV14-NAME = Brightness
+ST-GV15-NAME = Timer
+ST-GV16-NAME = On
+
+#CMD-DON-NAME = On
+#CMD-DOF-NAME = Off
+CMD-SET_COLOR_RGBW-NAME = Set LED Color
+CMD-SET_EFFECT-NAME = Set Effect
+
+CMDP-R2DRGB-R-NAME = Red
+CMDP-R2DRGB-G-NAME = Green
+CMDP-R2DRGB-B-NAME = Blue
+CMDP-R2DRGB-W-NAME = White
+CMDP-R2DBRI-BR-NAME = Brightness
+CMDP-R2DTMR-TM-NAME = Timer
+CMDP-R2DBOOL-ON-NAME = On
+
+CMDP-R2DEFF-EFF-NAME = Effect
+
+PGM-CMD-SET_COLOR_RGB-FMT = /R// Red ${v}/ /G// Green ${v}/ /B// Blue ${v}/ /W// White ${v}/ /BR// Brightness ${v}/ /Timer// in ${v}/
+
+BOOL_SEL-0 = True
+BOOL_SEL-1 = False
+
+EFF_SEL-0 = Off
+EFF_SEL-1 = MeteorShower
+EFF_SEL-2 = GradualChange
+EFF_SEL-3 = Flash
+EFF_SEL-4 = RedGreenChange

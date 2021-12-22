@@ -1,0 +1,47 @@
+<nodeDefs>
+    <nodeDef id="RGBW2Controller">
+        <editors />
+        <sts>
+            <st id="ST" editor="bool" />
+        </sts>
+        <cmds>
+            <sends>
+            </sends>
+            <accepts>
+            </accepts>
+        </cmds>
+    </nodeDef>
+    <nodeDef id="RGBW2Device">
+        <editors />
+        <sts>
+            <st id="ST" editor="bool" />       <!-- Power On/Off-->
+            <st id="GV14" editor="R2DBRI" />   <!-- Brightness-->
+            <st id="GV13" editor="R2DRGB" />   <!-- White-->
+            <st id="GV10" editor="R2DRGB" />   <!-- Red-->
+            <st id="GV11" editor="R2DRGB" />   <!-- Green-->
+            <st id="GV12" editor="R2DRGB" />   <!-- Blue-->
+        </sts>
+        <cmds>
+            <sends>
+                <cmd id="DON" />
+                <cmd id="DOF" />
+            </sends>
+            <accepts>
+                <cmd id="DON" />
+                <cmd id="DOF" />
+                <cmd id="SET_COLOR_RGBW">
+                    <p id="R" editor="R2DRGB"  init="GV10" />
+                    <p id="G" editor="R2DRGB"  init="GV11"/>
+                    <p id="B" editor="R2DRGB"  init="GV12"/>
+                    <p id="W" editor="R2DRGB"  init="GV13"/>
+                    <p id="BR" editor="R2DBRI" init="GV14"/>
+                    <p id="TM" editor="R2DTMR" init="GV15" />
+                    <p id="ON" editor="R2DBOOL"   init="GV16" />
+                </cmd>
+                <cmd id="SET_EFFECT">
+                    <p id="EFF" editor="R2DEFF"/>
+                </cmd>
+            </accepts>
+        </cmds>
+    </nodeDef>
+</nodeDefs>

@@ -1,0 +1,29 @@
+<editors>
+
+    <!-- Num Devices   -->
+    <editor id="R2DBOOL">
+        <range uom="2" subset="0,1" />
+    </editor>
+
+    <!-- RGBW value   -->
+    <editor id="R2DRGB">
+        <range uom="100" min="0" max="255" prec="0" step="1" />
+     </editor>
+
+    <!-- Brightness   -->
+    <editor id="R2DBRI">
+        <range uom="78" min="0" max="100" prec="0" step="1" />
+     </editor>
+    
+    <!-- transition timer (ms)   -->
+    <editor id="R2DTMR">
+        <range uom="42" min="0" max="5000" prec="0" step="1" />
+     </editor>
+       
+    <!-- Effect   -->
+    <editor id="R2DEFF">
+        <range uom="25" subset= "0-4" nls = "EFF_SEL"/>
+     </editor>
+
+
+</editors>
