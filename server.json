@@ -1,34 +1,21 @@
 {
-    "name": "Shelly RGBW2",
+    "name": "ShellyRGBW2",
     "docs": "https://github.com/TangoWhiskey1/Shelly_RGBW2_Nodeserver/blob/master/README.md",
     "type": "python3",
     "executable": "Shelly_RGBW2_Nodeserver.py",
     "install": "install.sh",
-    "shortPoll": "90",
+    "shortPoll": "30",
     "longPoll": "600",
     "description": "Connect Shelly RGBW2 LED Controllers to the ISY994.",
     "notice": "https://github.com/TangoWhiskey1/Shelly_RGBW2_Nodeserver/blob/master/LICENSE",
-	"logLevel": "INFO",
-	"customParams": {
-		"host": ""
-	},
     "credits": [
         {
             "title": "Shelly RGBW2 LED Controller Polyglot v2 interface",
             "author": "TangoWhiskey1",
-            "version": "0.0.1",
+            "version": "0.0.2",
             "date":    "December 25, 2021",
             "source":  "https://github.com/TangoWhiskey1/Shelly_RGBW2_Nodeserver",
             "license": "https://github.com/TangoWhiskey1/Shelly_RGBW2_Nodeserver/blob/master/LICENSE"
         }
-    ],
-    "store": {
-        "developer": "TangoWhiskey1",
-        "purchaseOptions": [
-            {
-                "isPerpetual": true,
-                "price": 0
-            }
-        ]
-    }
+    ]
 }

@@ -8,12 +8,14 @@ import polyinterface
 from Shelly_RGBW2_Client import Shelly_RGBW2_Client
 import json
 import sys
+import time
 import logging
 import warnings 
 import urllib3
 from copy import deepcopy
 from types import BuiltinFunctionType
 from typing import Any
+from device_finder import Device_Finder
 
 LOGGER = polyinterface.LOGGER
 
@@ -29,21 +31,8 @@ _ISY_UOM_78_0TO100_ONOFF = 78
 _ISY_UOM_100_BYTE = 100
 
 
-_PARM_NUM_DEVICES_NAME = "Num_RGBW2"
-_PART_ADDR_FORMAT_STRING = "RGBW2_{}"
+_PART_NAME_PREFIX = "RGBW2_"
 
-"""
-def get_profile_info(logger):
-    pvf = 'profile/version.txt'
-    try:
-        with open(pvf) as f:
-            pv = f.read().replace('\n', '')
-    except Exception as err:
-        logger.error('get_profile_info: failed to read  file {0}: {1}'.format(pvf,err), exc_info=True)
-        pv = 0
-    f.close()
-    return { 'version': pv }
-"""
 #
 #
 #  Controller Class
@@ -66,7 +55,7 @@ class RGBW2Controller(polyinterface.Controller):
         """
         super(RGBW2Controller, self).__init__(polyglot)
         # ISY required
-        self.name = 'Shelly RGBW2 Controller'
+        self.name = 'ShellyRGBWController'
         self.hb = 0 #heartbeat
         self.poly = polyglot
         self.queryON = True
@@ -75,7 +64,6 @@ class RGBW2Controller(polyinterface.Controller):
         LOGGER.debug('Entered init')
 
         # implementation specific
-        self.numDevices = 0
         self.device_nodes = dict()  #dictionary of ISY address to device Name and device IP address.
         self.configComplete = False
 
@@ -86,37 +74,53 @@ class RGBW2Controller(polyinterface.Controller):
         This  runs once the NodeServer connects to Polyglot and gets it's config.
         No need to Super this method, the parent version does nothing.
         """        
-        LOGGER.info('Controller: Started Shelly RGBW2 Node Server for v3 NodeServer ')
+        LOGGER.info('Controller: Started ShellyRGBW2 Node Server for v2 NodeServer ')
         # Show values on startup if desired.
         LOGGER.debug('ST=%s',self.getDriver('ST'))
         self.setDriver('ST', 1)
         self.heartbeat(0)
-
-        #####################
-        #  DEBUG CODE #######
-        #####################
-        if self.getCustomParam(_PARM_NUM_DEVICES_NAME) == None:
-            LOGGER.debug('***Adding custom config***')
-            self.addCustomParam( {"Num_RGBW2": "3"} )
-            self.addCustomParam( {"RGBW2_1":"Shelly1, 192.168.3.64"} )
-            self.addCustomParam( {"RGBW2_2":"Shelly2, 192.168.3.65"} )
-            self.addCustomParam( {"RGBW2_3":"Shelly3, 192.168.3.66"} )
-        #####################
-        #####################
-        #####################
+        
+        #  Auto Find devices if nothing in config
+        if (self.polyConfig["customParams"] == None) or (len(self.polyConfig["customParams"]) == 0):
+            self.auto_find_devices()
 
         self.process_config(self.polyConfig)
         
-        # if no custom configuration, no devices given, so nothing to do
-        if not self.configComplete:
-            LOGGER.error('Controller: ** Invalid configuation found! Shutting down node server')
-            self.poly.send({"stop": {}})
-            return
+        # if stil no custom configuration, no devices found or given, so nothing to do
+        while not self.configComplete:
+            self.addNotice({"WaitingForConfig":"ShellyRGBW2: Waiting for a valid user config"})
+            LOGGER.info('Waiting for a valid user config')
+            time.sleep(5)
+            self.removeNotice("WaitingForConfig")
 
         # Set the nodeserver status flag to indicate nodeserver is running
         self.setDriver("ST", 1, True, True)
 
 
+    def auto_find_devices(self) -> bool:
+        self.addNotice({"ControllerAutoFind":"ShellyRGBW2: Looking for devices on network, this will take few seconds"})
+        new_device_found = False
+        finder = Device_Finder( 'shellyrgbw2')
+        finder.look_for_devices()
+        LOGGER.info( "Controller: Found " + str(len(finder.devices)) + " devices:" )
+        for devName in finder.devices:
+            ipAddr = finder.devices[devName][:-3] #remove the port number from the address
+            cleaned_dev_name = self.generate_name(devName)
+            if( cleaned_dev_name == None):
+                LOGGER.error('Controller: Invalid name for device found in config, device not added: ' + devName )
+                continue
+            #See if device exists, if  not add
+            if( self.getCustomParam(cleaned_dev_name) == None ):
+                LOGGER.info('Adding discovered device to config: ' + cleaned_dev_name + ' ('+ ipAddr + ')')
+                self.addCustomParam(  {cleaned_dev_name : ipAddr } )
+                new_device_found = True
+        self.removeNotice("ControllerAutoFind")
+        return new_device_found
+
+    def generate_name(self, network_device_name)->str:
+        if (network_device_name[:12] != 'shellyrgbw2-') or (len(network_device_name) < 17):
+            return None
+        return _PART_NAME_PREFIX + network_device_name[12:18]
 
     def process_config(self, config):
         self.removeNoticesAll()
@@ -131,36 +135,26 @@ class RGBW2Controller(polyinterface.Controller):
                 LOGGER.error('Controller: customParams not found in Config')
                 return
 
-            self.numDevices = int(self.getCustomParam(_PARM_NUM_DEVICES_NAME))
-
-            if self.numDevices == None:
-                LOGGER.error('Controller: Num Devices custom parameter not found')
-                return
-            
-            if self.numDevices == 0:
-                LOGGER.error('Controller: Num Devices is zero, nothing to do')
-                return
-
-            LOGGER.debug('Controller: Parsing Custom Params')
-            for num in range(self.numDevices):
-                device_config_str =self.getCustomParam( _PART_ADDR_FORMAT_STRING.format(num+1))
-                if device_config_str == None:
-                    LOGGER.error('Controller: Can not find device string for device number ' + str(num+1))
-                    return
-
-                device_config_str = device_config_str.split(",") 
-                device_name = device_config_str[0].strip()
-
-                device_addr = device_config_str[1].strip()
+            for devName in config["customParams"]:
+                device_name = devName.strip()
+                if( device_name[:len(_PART_NAME_PREFIX)] != _PART_NAME_PREFIX):
+                    LOGGER.error('Controller: Custom Params device name format incorrect. Must start with '+ _PART_NAME_PREFIX + '  found name of ' + device_name)
+                    continue
+                device_addr = config["customParams"][devName].strip()
                 isy_addr = 's'+device_addr.replace(".","")
-
+                if( len(isy_addr) < 8 ):
+                    LOGGER.error('Controller: Custom Params device IP format incorrect. IP Address too short:' + isy_addr)
+                    continue
                 self.device_nodes[isy_addr] = [device_name, device_addr]
-                LOGGER.debug('Controller: Added device_node: ' + device_name + 'as isy address ' + isy_addr + ' (' + device_addr + ')')
+                LOGGER.debug('Controller: Added device_node: ' + device_name + ' as isy address ' + isy_addr + ' (' + device_addr + ')')
+            
+            if len(self.device_nodes) == 0:
+                LOGGER.error('Controller: No devices found in config, nothing to do!')
+                return
             self.configComplete = True
             self.add_devices()
         except Exception as ex:
-            LOGGER.error('Controller: Error parsing config in the Shelly RGBW2 NodeServer: %s', str(ex))
-
+            LOGGER.error('Controller: Error parsing config in the ShellyRGBW2 NodeServer: %s', str(ex))
 
     def add_devices(self):
         LOGGER.debug('Controller: add_devices called')
@@ -170,7 +164,6 @@ class RGBW2Controller(polyinterface.Controller):
                 device_addr = self.device_nodes[isy_addr][1]
                 self.addNode( RGBW2_Node(self, self.address, isy_addr,device_addr, device_name) )
            
-        
     
     def shortPoll(self):
         """
@@ -205,7 +198,7 @@ class RGBW2Controller(polyinterface.Controller):
         co-resident and controlled by Polyglot, it will be terminiated within 5 seconds
         of receiving this message.
         """
-        LOGGER.info('Controller: Deleting The Shelly RGBW2 Nodeserver')
+        LOGGER.info('Controller: Deleting The ShellyRGBW2 Nodeserver')
 
     def set_module_logs(self,level):
         logging.getLogger('urllib3').setLevel(level)
@@ -214,11 +207,20 @@ class RGBW2Controller(polyinterface.Controller):
         LOGGER.debug('Controller: update_profile called')
         st = self.poly.installprofile()
         return st
+    
+    def on_discover(self):
+        dev_found = self.auto_find_devices()
+        if dev_found == True:
+            self.process_config(self.polyConfig)
 
     id = 'RGBW2Controller'
-    commands = { }
+    commands = { 
+                'DISCOVER': on_discover,
+
+    }
     drivers = [{'driver': 'ST', 'value': 1, 'uom': _ISY_UOM_2_BOOL},  # Status
     ]
+
 
 
 #
@@ -365,7 +367,7 @@ class RGBW2_Node(polyinterface.Node):
 
 if __name__ == "__main__":
     try:
-        poly = polyinterface.Interface([])
+        poly = polyinterface.Interface('')
         poly.start()
         controller = RGBW2Controller(poly)
         controller.runForever()
