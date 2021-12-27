@@ -20,6 +20,11 @@
         <range uom="42" min="0" max="5000" prec="0" step="1" />
      </editor>
        
+    <!-- Transition TIme   -->
+    <editor id="R2TRAN">
+        <range uom="42" min="0" max="5000" prec="0" step="1" />
+     </editor>
+
     <!-- Effect   -->
     <editor id="R2DEFF">
         <range uom="25" subset= "0-4" nls = "EFF_SEL"/>

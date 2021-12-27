@@ -21,10 +21,18 @@ ST-GV13-NAME = White
 ST-GV14-NAME = Brightness
 ST-GV15-NAME = Timer
 ST-GV16-NAME = On
+ST-GV17-NAME = Transition Time
+ST-GV18-NAME = Effect
 
-CMD-SET_COLOR_RGBW-NAME = Set LED Color
+CMD-SET_ALL_COLOR-NAME = Set All Color Settings
+CMD-SET_COLOR_RGBW-NAME = Set RGBW Values
+CMD-SET_BRIGHTNESS-NAME = Set Brightness
 CMD-SET_EFFECT-NAME = Set Effect
 CMD-DISCOVER-NAME = Find Devices
+CMD-SET_TRANSITION-NAME = Set Transition Time
+CMD-QUERY-NAME = Query Device
+
+
 
 CMDP-R2DRGB-R-NAME = Red
 CMDP-R2DRGB-G-NAME = Green
@@ -35,8 +43,20 @@ CMDP-R2DTMR-TM-NAME = Timer
 CMDP-R2DBOOL-ON-NAME = On
 
 CMDP-R2DEFF-EFF-NAME = Effect
+CMDP-R2TRAN-TRN-NAME = Transition Time
 
-PGM-CMD-SET_COLOR_RGB-FMT = /R// Red ${v}/ /G// Green ${v}/ /B// Blue ${v}/ /W// White ${v}/ /BR// Brightness ${v}/ /Timer// in ${v}/
+CMDP-R2DRGB-RSC-NAME = Red
+CMDP-R2DRGB-GSC-NAME = Green
+CMDP-R2DRGB-BSC-NAME = Blue
+CMDP-R2DRGB-WSC-NAME = White
+CMDP-R2DBRI-BRSB-NAME = Brightness
+
+
+PGM-CMD-SET_ALL_COLOR-FMT = /R// Red: ${v}/ /G// Green: ${v}/ /B// Blue: ${v}/ /W// White: ${v}/ /BR// Brightness: ${v}/ /TM// Timer: ${v}/
+PGM-CMD-SET_COLOR_RGBW-FMT = /RSC// Red: ${v}/ /GSC// Green: ${v}/ /BSC// Blue: ${v}/ /WSC// White: ${v}/
+PGM-CMD-SET_EFFECT-FMT = /EFF// Effect: ${v}/
+PGM-CMD-SET_TRANSITION-FMT = /TRN// Transition: ${v}/
+
 
 BOOL_SEL-0 = True
 BOOL_SEL-1 = False

@@ -18,6 +18,9 @@ from typing import Any
 from device_finder import Device_Finder
 
 LOGGER = polyinterface.LOGGER
+#_Logging_level = logging.DEBUG
+_Logging_level = logging.INFO
+
 
 # constants for ISY Nodeserver interface
 _ISY_UOM_2_BOOL = 2 
@@ -60,7 +63,7 @@ class RGBW2Controller(polyinterface.Controller):
         self.poly = polyglot
         self.queryON = True
 
-        LOGGER.setLevel(logging.DEBUG)
+        LOGGER.setLevel(_Logging_level)
         LOGGER.debug('Entered init')
 
         # implementation specific
@@ -75,6 +78,8 @@ class RGBW2Controller(polyinterface.Controller):
         No need to Super this method, the parent version does nothing.
         """        
         LOGGER.info('Controller: Started ShellyRGBW2 Node Server for v2 NodeServer ')
+        self.server_data = self.poly.get_server_data(check_profile=True)
+
         # Show values on startup if desired.
         LOGGER.debug('ST=%s',self.getDriver('ST'))
         self.setDriver('ST', 1)
@@ -255,26 +260,36 @@ class RGBW2_Node(polyinterface.Node):
         self.updateStatuses() 
 
     def shortPoll(self):
-        LOGGER.debug('shortPoll')
         self.updateStatuses()
 
     def updateStatuses(self):
         LOGGER.debug('Node: updateStatuses() called for  %s (%s)', self.name, self.address)
         try :
-            device_color = self.shelly_device.get_device_color()
+            device_status = self.shelly_device.get_device_settings()
+            red        = device_status['lights'][0]['red']
+            green      = device_status['lights'][0]['green']
+            blue       = device_status['lights'][0]['blue']
+            white      = device_status['lights'][0]['white']
+            brightness = device_status['lights'][0]['gain']
+            is_on       = device_status['lights'][0]['ison']
+            transition = device_status['lights'][0]['transition']
+            effect     = device_status['lights'][0]['effect']
             on_state = 0
-            if device_color.on == True:
+            if is_on == True:
                 on_state = 1
-            LOGGER.debug('Node: LED status = [%s, %s, %s, %s]', str(on_state), str(device_color.red), str(device_color.green), str(device_color.blue)  )
+
+            LOGGER.debug('Node: LED status = RGBWBr[%s, %s, %s, %s, %s] - OTE[%s, %s, %s]', str(red), str(green), str(blue) ,str(white),str(brightness),str(is_on),str(transition),str(effect))
 
             self.setDriver('ST',    on_state )
-            self.setDriver('GV10',  device_color.red)
-            self.setDriver('GV11',  device_color.green)
-            self.setDriver('GV12',  device_color.blue)
-            self.setDriver('GV13',  device_color.white)
-            self.setDriver('GV14',  device_color.brightness)
-            self.setDriver('GV15',  device_color.timer)
+            self.setDriver('GV10',  red)
+            self.setDriver('GV11',  green)
+            self.setDriver('GV12',  blue)
+            self.setDriver('GV13',  white)
+            self.setDriver('GV14',  brightness)
             self.setDriver('GV16',  on_state)
+            self.setDriver('GV17',  transition) 
+            self.setDriver('GV18',  effect) 
+
         except Exception as ex :
             LOGGER.error('Node: updateStatuses: %s', str(ex))
 
@@ -294,21 +309,12 @@ class RGBW2_Node(polyinterface.Node):
         except Exception as ex:
             LOGGER.error('on_DOF: %s', str(ex))
     
-    def On_BRT(self, command):
-        LOGGER.debug('Node: On_BRT() called')
-        try:
-            gain = int(command.get('value'))
-            self.shelly_device.device_on_with_color(brightness=gain)
-            self.updateStatuses()
-        except Exception as ex:
-            LOGGER.error('On_BRT: %s', str(ex))
-        
     def On_Query(self, command):
         LOGGER.debug('Node: On_Query() called')
         self.updateStatuses()
 
-    def On_SetColor(self, command):
-        LOGGER.debug('Node: On_SetColor() called')
+    def On_SetAllColor(self, command):
+        LOGGER.debug('Node: On_SetAllColor() called')
         try:
             query  = command.get('query')
             r_cmd  = int(query.get('R.uom100'))
@@ -328,6 +334,28 @@ class RGBW2_Node(polyinterface.Node):
         except Exception as ex:
             LOGGER.error('On_SetColor: %s', str(ex))
 
+    def On_SetColor(self, command):
+        LOGGER.debug('Node: On_SetAllColor() called')
+        try:
+            query  = command.get('query')
+            r_cmd  = int(query.get('RSC.uom100'))
+            g_cmd  = int(query.get('GSC.uom100'))
+            b_cmd  = int(query.get('BSC.uom100'))
+            w_cmd  = int(query.get('WSC.uom100'))
+            self.shelly_device.device_on_with_color(red = r_cmd, green = g_cmd, blue = b_cmd, white = w_cmd)
+            self.updateStatuses()
+        except Exception as ex:
+            LOGGER.error('On_SetAllColor: %s', str(ex))
+
+    def On_Brightness(self, command):
+        try:
+            query  = command.get('query')
+            gain  = int(query.get('BRSB.uom78'))
+            self.shelly_device.device_on_with_color(brightness=gain)
+            self.updateStatuses()
+        except Exception as ex:
+            LOGGER.error('On_BRT: %s', str(ex))
+
     
     def On_SetEffect(self, command):
         LOGGER.debug('Node: On_SetEffect() called')
@@ -335,7 +363,13 @@ class RGBW2_Node(polyinterface.Node):
         eff_num  = int(query.get('EFF.uom25'))
         self.shelly_device.device_set_color_effect(eff_num)
         self.updateStatuses()
-        pass
+
+    def On_SetTransition(self, command):
+        LOGGER.debug('Node: On_SetTransition() called')
+        query  = command.get('query')
+        eff_num  = int(query.get('TRN.uom42'))
+        self.shelly_device.device_set_default_color_transition(eff_num)
+        self.updateStatuses()
 
     def isOn(self) : 
         return self.shelly_device.get_device_is_on()
@@ -352,15 +386,19 @@ class RGBW2_Node(polyinterface.Node):
                {'driver': 'GV14', 'value': 0, 'uom': _ISY_UOM_78_0TO100_ONOFF},   # Brightness 
                {'driver': 'GV15', 'value': 0, 'uom': _ISY_UOM_42_MILLISECOND},   # Timer
                {'driver': 'GV16', 'value': 0, 'uom': _ISY_UOM_2_BOOL},      # On/Off
+               {'driver': 'GV17', 'value': 0, 'uom': _ISY_UOM_42_MILLISECOND},      # Transition Time
+               {'driver': 'GV18', 'value': 0, 'uom': _ISY_UOM_25_INDEX},      # Effect
               ]  
 
     id = "RGBW2Device"
     commands = {
                     'DON': on_DON,
                     'DOF': on_DOF,
-                    'BRT': On_BRT,
-                    'Query': On_Query,
+                    'QUERY': On_Query,
+                    'SET_ALL_COLOR': On_SetAllColor,
                     'SET_COLOR_RGBW': On_SetColor,
+                    'SET_BRIGHTNESS': On_Brightness,
+                    'SET_TRANSITION': On_SetTransition,
                     'SET_EFFECT': On_SetEffect,
                 }
 

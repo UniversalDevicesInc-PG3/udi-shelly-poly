@@ -65,7 +65,9 @@ class Shelly_RGBW2_Client:
     #
     def get_device_settings(self) -> Any:
         """Retrieve the device configuration information."""
-        return asyncio.run(self.__send_request("settings"))
+        json_settings = asyncio.run(self.__send_request("settings"))
+        settings_dict = json.loads(json_settings)
+        return settings_dict
 
     def get_device_info(self) -> Any:
         """Provides basic information about the device. This does not require HTTP authentication. Can be used in for device discovery and identification."""
@@ -73,7 +75,10 @@ class Shelly_RGBW2_Client:
 
     def get_device_status(self) -> Any:
         """Retrieve the device status information such as free ram, free memory, and uptime."""
-        return asyncio.run( self.__send_request("status"))
+        json_status =   asyncio.run( self.__send_request("status"))
+        status_dict = json.loads(json_status)
+        return status_dict
+
 
     def get_device_color_settings(self) -> Any:
             """Retrieve the device settings for color mode."""
@@ -188,19 +193,19 @@ class Shelly_RGBW2_Client:
         """Set the RGBW and brightness values."""
         cmd = "color/0?"
         joiner = ''
-        if 0 <= color.red <= 255:
+        if (color.red != None) and  (0 <= color.red <= 255):
             cmd += joiner + "red="+str(color.red)
             joiner = '&'
-        if 0 <= color.green <= 255:
+        if  (color.green != None) and  (0 <= color.green <= 255):
             cmd += joiner + 'green='+str(color.green)
             joiner = '&'
-        if 0 <= color.blue <= 255:
+        if  (color.blue != None) and  (0 <= color.blue <= 255):
             cmd += joiner + 'blue='+str(color.blue)
             joiner = '&'
-        if 0 <= color.white <= 255:
+        if  (color.white != None) and  (0 <= color.white <= 255):
             cmd += joiner + 'white='+str(color.white)
             joiner = '&'
-        if 0 <= color.brightness <= 100:
+        if  (color.brightness != None) and  (0 <= color.brightness <= 100):
             cmd += joiner + 'gain='+str(color.brightness)
             joiner = '&'
         if color.on == 1:

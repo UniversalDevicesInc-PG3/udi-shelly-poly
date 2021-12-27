@@ -21,6 +21,8 @@
             <st id="GV10" editor="R2DRGB" />   <!-- Red-->
             <st id="GV11" editor="R2DRGB" />   <!-- Green-->
             <st id="GV12" editor="R2DRGB" />   <!-- Blue-->
+            <st id="GV17" editor="R2TRAN" />   <!-- Tansition Time Time-->
+            <st id="GV18" editor="R2DEFF" />   <!-- Effect-->
         </sts>
         <cmds>
             <sends>
@@ -30,7 +32,8 @@
             <accepts>
                 <cmd id="DON" />
                 <cmd id="DOF" />
-                <cmd id="SET_COLOR_RGBW">
+                <cmd id="QUERY" />
+                <cmd id="SET_ALL_COLOR">
                     <p id="R" editor="R2DRGB"  init="GV10" />
                     <p id="G" editor="R2DRGB"  init="GV11"/>
                     <p id="B" editor="R2DRGB"  init="GV12"/>
@@ -39,8 +42,23 @@
                     <p id="TM" editor="R2DTMR" init="GV15" />
                     <p id="ON" editor="R2DBOOL"   init="GV16" />
                 </cmd>
+
+                <cmd id="SET_COLOR_RGBW">
+                    <p id="RSC" editor="R2DRGB"  init="GV10" />
+                    <p id="GSC" editor="R2DRGB"  init="GV11"/>
+                    <p id="BSC" editor="R2DRGB"  init="GV12"/>
+                    <p id="WSC" editor="R2DRGB"  init="GV13"/>
+                </cmd>
+
+                <cmd id="SET_BRIGHTNESS">
+                    <p id="BRSB" editor="R2DBRI"  init="GV14"/>
+                </cmd>
+
                 <cmd id="SET_EFFECT">
                     <p id="EFF" editor="R2DEFF"/>
+                </cmd>
+                <cmd id="SET_TRANSITION">
+                    <p id="TRN" editor="R2TRAN" init="GV17"/>
                 </cmd>
             </accepts>
         </cmds>
