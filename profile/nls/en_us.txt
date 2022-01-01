@@ -6,6 +6,10 @@ ST-RGBW2Controller-ST-NAME = Connected
 ND-RGBW2Device-NAME = RGBW2 
 ND-RGBW2Device-ICON = Lamp
 
+ND-Shelly1Device-NAME = Shelly1 
+ND-Shelly1Device-ICON = Electricity
+
+
 #Node
 ST-ST-NAME  = On
 ST-GV2-NAME = Power Use
