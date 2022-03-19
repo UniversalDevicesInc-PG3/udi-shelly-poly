@@ -1,8 +1,9 @@
 import polyinterface
-import os
+import traceback
 
 from  Node_Shared import *
 from ShellyDevice_Shelly1 import ShellyDevice_Shelly1
+from ShellyDevice_Base import DeviceConnectorError
 from device_finder import Device_Finder
 
 
@@ -38,6 +39,10 @@ class Shelly1_Node(polyinterface.Node):
     def updateStatuses(self):
         LOGGER.debug('Node: updateStatuses() called for  %s (%s)', self.name, self.address)
         try :
+            # json_state =  self.shelly_device.get_device_status()
+            # LOGGER.info('Node: status is  %s', json_state)
+            # is_on = json_state[self.shelly_device.primary_status_channel][0]['ison']
+
             is_on = self.shelly_device.get_device_is_on()
             on_state = 0
             if is_on == True:
@@ -46,10 +51,15 @@ class Shelly1_Node(polyinterface.Node):
             LOGGER.debug('Node: Relay status = ' + str(is_on))
 
             self.setDriver('ST',    on_state )
-            self.setDriver('GV10',  on_state)
+            self.setDriver('GV19',  1)
+
+        except DeviceConnectorError as ex :
+            self.setDriver('GV19',  0)
+            self.setDriver('ST',    0 )
 
         except Exception as ex :
             LOGGER.error('Node: updateStatuses: %s', str(ex))
+            #LOGGER.error('Node: updateStatuses: %s', traceback.format_exc())
 
     def on_DON(self, command):
         LOGGER.debug('Node: on_DON() called')
@@ -73,13 +83,14 @@ class Shelly1_Node(polyinterface.Node):
 
     def isOn(self) : 
         return self.shelly_device.get_device_is_on()
-        
     
     drivers = [{'driver': 'ST',   'value': 0, 'uom': ISY_UOM_2_BOOL},    # Status = DevicePower On State
-               {'driver': 'GV10', 'value': 0, 'uom': ISY_UOM_2_BOOL},      # On/Off
+               {'driver': 'GV19', 'value': 0, 'uom': ISY_UOM_2_BOOL},      # Online/Offline
               ]  
 
     id = "Shelly1Device"
+    #hint = '0x01040200'  #https://github.com/UniversalDevicesInc-PG3/udi-poly-ecobee/blob/7893dea2349b855d70a391347bd9130dde0e8804/nodes/Thermostat.py#L700
+    hint = '0x02000000'  #https://wiki.universal-devices.com/index.php?title=Node_Hints_Documentation
     commands = {
                     'DON': on_DON,
                     'DOF': on_DOF,

@@ -1,6 +1,11 @@
 <editors>
 
-    <!-- Num Devices   -->
+    <!-- Boolean   -->
+    <editor id="R2DONLINE">
+        <range uom="2" subset="0,1" />
+    </editor>
+
+    <!-- Boolean   -->
     <editor id="R2DBOOL">
         <range uom="2" subset="0,1" />
     </editor>

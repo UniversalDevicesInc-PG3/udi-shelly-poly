@@ -46,14 +46,16 @@ class RGBW2Controller(polyinterface.Controller):
         self.config: Dictionary, this node's Config
         """
         super(RGBW2Controller, self).__init__(polyglot)
+
+        #LOGGER.setLevel(logging.DEBUG)
+        LOGGER.setLevel(logging.INFO)
+
         # ISY required
         self.name = 'ShellyRGBWController'
         self.hb = 0 #heartbeat
         self.poly = polyglot
         self.queryON = True
 
-        #LOGGER.setLevel(logging.DEBUG)
-        LOGGER.setLevel(logging.INFO)
 
         LOGGER.debug('Entered init')
 
@@ -137,6 +139,11 @@ class RGBW2Controller(polyinterface.Controller):
 
             for devName in config["customParams"]:
                 device_name = devName.strip()
+                if device_name.upper() == 'LOGGING':
+                    if config["customParams"][devName].strip().upper() == 'DEBUG':
+                        LOGGER.setLevel(logging.DEBUG)
+                        continue
+
                 if device_name[:device_name.index('_')+1] not in _NETWORK_DEVICE_IDS.values():
                     LOGGER.error('Controller: Custom Params device name format incorrect. Must start with valid Shelly device type, instead found name of ' + device_name)
                     continue
@@ -205,8 +212,8 @@ class RGBW2Controller(polyinterface.Controller):
         """
         LOGGER.info('Controller: Deleting The ShellyRGBW2 Nodeserver')
 
-    def set_module_logs(self,level):
-        logging.getLogger('urllib3').setLevel(level)
+    #def set_module_logs(self,level):
+    #    logging.getLogger('urllib3').setLevel(level)
 
     def update_profile(self,command):
         LOGGER.debug('Controller: update_profile called')

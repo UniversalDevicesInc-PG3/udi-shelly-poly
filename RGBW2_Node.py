@@ -4,8 +4,11 @@
 #
 #
 
+import traceback
 import polyinterface
 from ShellyDevice_RGBW2 import ShellyDevice_RGBW2
+from ShellyDevice_Base import DeviceConnectorError
+
 from  Node_Shared import *
 from device_finder import Device_Finder
 
@@ -43,6 +46,8 @@ class RGBW2_Node(polyinterface.Node):
         LOGGER.debug('Node: updateStatuses() called for  %s (%s)', self.name, self.address)
         try :
             device_status = self.shelly_device.get_device_settings()
+            if device_status is None:
+                raise DeviceConnectorError
             red        = device_status['lights'][0]['red']
             green      = device_status['lights'][0]['green']
             blue       = device_status['lights'][0]['blue']
@@ -66,9 +71,24 @@ class RGBW2_Node(polyinterface.Node):
             self.setDriver('GV16',  on_state)
             self.setDriver('GV17',  transition) 
             self.setDriver('GV18',  effect) 
+            self.setDriver('GV19',  1)  #Online/Offline
+
+        except DeviceConnectorError as ex :
+            LOGGER.debug('Node: Exception connection error, statuses set to 0')
+            self.setDriver('ST',    0 )
+            self.setDriver('GV10',  0)
+            self.setDriver('GV11',  0)
+            self.setDriver('GV12',  0)
+            self.setDriver('GV13',  0)
+            self.setDriver('GV14',  0)
+            self.setDriver('GV16',  0)
+            self.setDriver('GV17',  0) 
+            self.setDriver('GV18',  0) 
+            self.setDriver('GV19',  0)
 
         except Exception as ex :
-            LOGGER.error('Node: updateStatuses: %s', str(ex))
+            LOGGER.error('Node: Exception in updateStatuses: %s', str(ex))
+            #LOGGER.error('Node: updateStatuses: %s', traceback.format_exc())
 
     def on_DON(self, command):
         LOGGER.debug('Node: on_DON() called')
@@ -165,7 +185,11 @@ class RGBW2_Node(polyinterface.Node):
                {'driver': 'GV16', 'value': 0, 'uom': ISY_UOM_2_BOOL},      # On/Off
                {'driver': 'GV17', 'value': 0, 'uom': ISY_UOM_42_MILLISECOND},      # Transition Time
                {'driver': 'GV18', 'value': 0, 'uom': ISY_UOM_25_INDEX},      # Effect
+               {'driver': 'GV19', 'value': 0, 'uom': ISY_UOM_2_BOOL},      # Online/Offline
               ]  
+
+    #hint = '0x01020A00' #https://github.com/UniversalDevicesInc-PG3/udi-poly-ecobee/blob/7893dea2349b855d70a391347bd9130dde0e8804/nodes/Thermostat.py#L700
+    hint = '0x01000000'  #https://wiki.universal-devices.com/index.php?title=Node_Hints_Documentation
 
     id = "RGBW2Device"
     commands = {

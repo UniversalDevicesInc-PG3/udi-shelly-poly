@@ -15,7 +15,8 @@
     <nodeDef id="RGBW2Device">
         <editors />
         <sts>
-            <st id="ST" editor="bool" />       <!-- Power On/Off-->
+            <st id="GV19" editor="R2DONLINE" />   <!--Online/Offline-->
+            <st id="ST" editor="R2DBOOL" />       <!-- Power On/Off-->
             <st id="GV14" editor="R2DBRI" />   <!-- Brightness-->
             <st id="GV13" editor="R2DRGB" />   <!-- White-->
             <st id="GV10" editor="R2DRGB" />   <!-- Red-->
@@ -66,7 +67,8 @@
     <nodeDef id="Shelly1Device">
         <editors />
         <sts>
-            <st id="ST" editor="bool" />       <!-- Power On/Off-->
+            <st id="GV19" editor="R2DONLINE" />   <!--Online/Offline-->
+            <st id="ST" editor="R2DBOOL" />       <!-- Power On/Off-->
         </sts>
         <cmds>
             <sends>

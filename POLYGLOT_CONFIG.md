@@ -7,3 +7,5 @@ Key: RGBW2_123ABC
 Value 192.168.1.1
 
 If you remove a RGBW2 from your system, delete the corresponding name/address entry in the Custom Configuration Parameter area of the Nodeserver Configuration.
+
+You can alos set logging level to debug using a custom configuration setting with a key of LOGGING and a value of DEBUG

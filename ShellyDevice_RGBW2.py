@@ -23,8 +23,8 @@ class LED_COLOR:
 class ShellyDevice_RGBW2(ShellyDevice_Base):
     """Controller class for the Shelly_RGBW2 Color."""
 
-    def __init__(self, host: str, session: ClientSession = None):
-        super().__init__( host, session)
+    def __init__(self, host: str, user: str = None, pwd: str = None,session: ClientSession = None):
+        super().__init__( host, user, pwd, session)
         """Initialize a Shelly_RGBW2_Client."""
 
         self.primary_output_channel  = 'color/0'

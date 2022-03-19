@@ -7,14 +7,14 @@
     "shortPoll": "5",
     "longPoll": "600",
     "description": "Connect Shelly RGBW2 LED Controllers to the ISY994.",
-    "profile_version": "0.1.1",
+    "profile_version": "0.1.4",
     "notice": "https://github.com/TangoWhiskey1/Shelly_RGBW2_Nodeserver/blob/master/LICENSE",
     "credits": [
         {
             "title": "Shelly RGBW2 LED Controller Polyglot v2 interface",
             "author": "TangoWhiskey1",
-            "version": "1.0.0",
-            "date":    "January 1, 2022",
+            "version": "1.0.1",
+            "date":    "March 19, 2022",
             "source":  "https://github.com/TangoWhiskey1/Shelly_RGBW2_Nodeserver",
             "license": "https://github.com/TangoWhiskey1/Shelly_RGBW2_Nodeserver/blob/master/LICENSE"
         }

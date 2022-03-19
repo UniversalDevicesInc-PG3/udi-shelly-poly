@@ -16,7 +16,7 @@ ST-GV2-NAME = Power Use
 ST-GV3-NAME = MAC Address
 ST-GV4-NAME = Uptime
 ST-GV5-NAME = Update Status
-ST-GV6-NAME = Update Availabe
+ST-GV6-NAME = Update Available
 ST-GV7-NAME = Mode
 ST-GV10-NAME = Red
 ST-GV11-NAME = Green
@@ -27,6 +27,7 @@ ST-GV15-NAME = Timer
 ST-GV16-NAME = On
 ST-GV17-NAME = Transition Time
 ST-GV18-NAME = Effect
+ST-GV19-NAME = Online
 
 CMD-SET_ALL_COLOR-NAME = Set All Color Settings
 CMD-SET_COLOR_RGBW-NAME = Set RGBW Values
@@ -62,8 +63,11 @@ PGM-CMD-SET_EFFECT-FMT = /EFF// Effect: ${v}/
 PGM-CMD-SET_TRANSITION-FMT = /TRN// Transition: ${v}/
 
 
-BOOL_SEL-0 = True
-BOOL_SEL-1 = False
+R2DBOOL_SEL-0 = False
+R2DBOOL_SEL-1 = True
+
+R2DONLINE_SEL-0 = Offline
+R2DONLINE_SEL-1 = Online
 
 EFF_SEL-0 = Off
 EFF_SEL-1 = MeteorShower

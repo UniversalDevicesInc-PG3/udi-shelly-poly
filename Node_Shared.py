@@ -4,6 +4,7 @@ import logging
 
 LOGGER = polyinterface.LOGGER
 
+
 # constants for ISY Nodeserver interface
 ISY_UOM_2_BOOL = 2 
 ISY_UOM_25_INDEX = 25 
