@@ -1,6 +1,6 @@
-# Shelly RGBW2 Polyglot V2 Node Server
+# Shelly RGBW2 Polyglot V3 Node Server
 
-This Nodeserver provides a basic interface between Shelly RGBW2 and Shelly1 devices and Polyglot v2 server.
+This Nodeserver provides a basic interface between Shelly RGBW2 and Shelly1 devices and Polyglot v3 server.
 
 ## Installation
 
@@ -71,3 +71,10 @@ UDI template at <https://github.com/Einstein42/udi-poly-template-python>
 * Indicator if device is offline
 * Set logging level to debug using custom configuration setting with a key of Logging and a value of DEBUG
 * Updated install script to (hopefully) work better on rPi installs
+
+--------
+
+2.0.0 - </br>
+
+* Convert to work on PG3
+

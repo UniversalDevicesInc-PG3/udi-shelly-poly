@@ -1,13 +1,13 @@
-import polyinterface
+import udi_interface
 import traceback
 
 from  Node_Shared import *
 from ShellyDevice_Shelly1 import ShellyDevice_Shelly1
 from ShellyDevice_Base import DeviceConnectorError
-from device_finder import Device_Finder
+#from device_finder import Device_Finder
 
 
-class Shelly1_Node(polyinterface.Node):
+class Shelly1_Node(udi_interface.Node):
     """
     Class Variables:
     self.primary: String address of the Controller node.
@@ -15,15 +15,18 @@ class Shelly1_Node(polyinterface.Node):
     self.address: String address of this Node 14 character limit. (ISY limitation)
     self.added: Boolean Confirmed added to ISY
     """
-    def __init__(self, controller, primary, isy_address, device_address, device_name):
+    def __init__(self, polyglot, primary, isy_address, device_address, device_name):
         #You do NOT have to override the __init__ method, but if you do, you MUST call super.
-        super(Shelly1_Node, self).__init__(controller, primary, isy_address, device_name)
+        super(Shelly1_Node, self).__init__(polyglot, primary, isy_address, device_name)
         LOGGER.debug("Node: Init Node " + device_name + " ("+ device_address + ")")
 
         #set specific values
         self.device_addr = device_address
         self.queryON = True
         self.shelly_device = ShellyDevice_Shelly1(self.device_addr)
+
+        polyglot.subscribe(polyglot.START, self.start, isy_address)
+        polyglot.subscribe(polyglot.POLL, self.poll)
 
     def start(self):
         """
@@ -33,8 +36,9 @@ class Shelly1_Node(polyinterface.Node):
         LOGGER.debug('Node: Start called for node ' + self.name + ' (' + self.address + ')')
         self.updateStatuses() 
 
-    def shortPoll(self):
-        self.updateStatuses()
+    def poll(self, pollflag):
+        if pollflag == 'shortPoll':
+            self.updateStatuses()
 
     def updateStatuses(self):
         LOGGER.debug('Node: updateStatuses() called for  %s (%s)', self.name, self.address)

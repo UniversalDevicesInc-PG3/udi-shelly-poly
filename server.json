@@ -1,6 +1,6 @@
 {
     "name": "ShellyRGBW2",
-    "docs": "https://github.com/TangoWhiskey1/Shelly_RGBW2_Nodeserver/blob/master/README.md",
+    "docs": "https://github.com/UniversalDevicesInc-PG3/udi-shelly-poly/blob/master/README.md",
     "type": "python3",
     "executable": "Shelly_RGBW2_Nodeserver.py",
     "install": "install.sh",
@@ -8,15 +8,16 @@
     "longPoll": "600",
     "description": "Connect Shelly RGBW2 LED Controllers to the ISY994.",
     "profile_version": "0.1.4",
-    "notice": "https://github.com/TangoWhiskey1/Shelly_RGBW2_Nodeserver/blob/master/LICENSE",
+    "discover": true,
+    "notice": "https://github.com/UniversalDevicesInc-PG3/udi-shelly-poly/blob/master/LICENSE",
     "credits": [
         {
-            "title": "Shelly RGBW2 LED Controller Polyglot v2 interface",
+            "title": "Shelly RGBW2 LED Controller interface",
             "author": "TangoWhiskey1",
-            "version": "1.0.1",
-            "date":    "March 19, 2022",
-            "source":  "https://github.com/TangoWhiskey1/Shelly_RGBW2_Nodeserver",
-            "license": "https://github.com/TangoWhiskey1/Shelly_RGBW2_Nodeserver/blob/master/LICENSE"
+            "version": "2.0.0",
+            "date":    "April 27, 2022",
+            "source":  "https://github.com/UniversalDevicesInc-PG3/udi-shelly-poly",
+            "license": "https://github.com/UniversalDevicesInc-PG3/udi-shelly-poly/blob/master/LICENSE"
         }
     ]
 }
