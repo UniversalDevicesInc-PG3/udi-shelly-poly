@@ -126,7 +126,7 @@ class RGBW2Controller(object):
                 continue
 
             isy_addr = 's'+ipAddr.replace(".","")
-            self.device_nodes[isy_addr] = [clened_dev_name, ipAddr]
+            self.device_nodes[isy_addr] = [cleaned_dev_name, ipAddr]
             new_device_found = True
 
         self.poly.Notices.delete('auto')
