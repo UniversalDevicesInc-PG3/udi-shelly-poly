@@ -14,8 +14,8 @@
         {
             "title": "Shelly RGBW2 LED Controller interface",
             "author": "TangoWhiskey1",
-            "version": "2.0.1",
-            "date":    "June 29, 2022",
+            "version": "2.0.2",
+            "date":    "July 1, 2022",
             "source":  "https://github.com/UniversalDevicesInc-PG3/udi-shelly-poly",
             "license": "https://github.com/UniversalDevicesInc-PG3/udi-shelly-poly/blob/master/LICENSE"
         }
