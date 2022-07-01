@@ -21,9 +21,9 @@ class RGBW2_Node(udi_interface.Node):
     self.address: String address of this Node 14 character limit. (ISY limitation)
     self.added: Boolean Confirmed added to ISY
     """
-    def __init__(self, polyglog, primary, isy_address, device_address, device_name):
+    def __init__(self, polyglot, primary, isy_address, device_address, device_name):
         #You do NOT have to override the __init__ method, but if you do, you MUST call super.
-        super(RGBW2_Node, self).__init__(polyglog, primary, isy_address, device_name)
+        super(RGBW2_Node, self).__init__(polyglot, primary, isy_address, device_name)
         LOGGER.debug("Node: Init Node " + device_name + " ("+ device_address + ")")
 
         #set specific values
