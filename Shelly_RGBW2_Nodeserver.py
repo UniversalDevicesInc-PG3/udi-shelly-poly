@@ -189,7 +189,7 @@ class RGBW2Controller(object):
 if __name__ == "__main__":
     try:
         poly = udi_interface.Interface([])
-        poly.start('2.0.2')
+        poly.start('2.0.3')
         RGBW2Controller(poly)
         poly.runForever()
     except (KeyboardInterrupt, SystemExit):
