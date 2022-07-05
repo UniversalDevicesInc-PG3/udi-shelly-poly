@@ -32,7 +32,7 @@ class RGBW2_Node(udi_interface.Node):
         self.shelly_device = ShellyDevice_RGBW2(self.device_addr)
 
         polyglot.subscribe(polyglot.START, self.start, isy_address)
-        polyglot.subscribe(polyglot.POLL, self.updateStatus)
+        polyglot.subscribe(polyglot.POLL, self.poll)
 
     def start(self):
         """
