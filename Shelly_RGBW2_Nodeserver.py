@@ -18,7 +18,7 @@ from Node_Shared import *
 from RGBW2_Node import *
 from Shelly1_Node import *
 
-_MIN_IP_ADDR_LEN = 8
+_MIN_IP_ADDR_LEN = 6
 
 _NETWORK_DEVICE_IDS = { 
     'shellyrgbw2-' : 'RGBW2_' ,
@@ -189,7 +189,7 @@ class RGBW2Controller(object):
 if __name__ == "__main__":
     try:
         poly = udi_interface.Interface([])
-        poly.start('2.0.3')
+        poly.start('2.0.4')
         RGBW2Controller(poly)
         poly.runForever()
     except (KeyboardInterrupt, SystemExit):
